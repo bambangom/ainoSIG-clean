@@ -1,0 +1,15 @@
+version: "3.9"
+
+services:
+  geoaino:
+    container_name: geoaino-app
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./uploaded_files:/app/uploaded_files
+      - ./results:/app/results
+      - ./converted:/app/converted
+    env_file:
+      - .env
+    restart: unless-stopped

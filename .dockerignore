@@ -1,0 +1,28 @@
+# Fichiers Python
+__pycache__/
+*.py[cod]
+*.db
+*.log
+
+# Fichiers secrets
+.env
+*.env
+
+# Répertoires de build
+node_modules/
+dist/
+frontend/node_modules/
+frontend/dist/
+uploads/
+converted/
+results/
+uploaded_files/
+
+# Fichiers inutiles
+.DS_Store
+*.zip
+*.tar
+*.gz
+*.bak
+*.tmp
+*.swp

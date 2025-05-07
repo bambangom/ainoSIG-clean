@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/assets/dgid-logo1.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Plateforme d’audit intelligent GEO-AINO SUPREME™ – DGID" />
+    <title>GEO-AINO SUPREME™ | DGID</title>
+
+    <!-- 🎨 Thème DGID -->
+    <style>
+      :root {
+        --dgid-green: #0d4e32;
+        --dgid-gray: #f5f5f5;
+        --dgid-text: #333333;
+        --dgid-gold: #c19f33;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", "Roboto", sans-serif;
+        background-color: var(--dgid-gray);
+        color: var(--dgid-text);
+      }
+
+      header {
+        background-color: var(--dgid-green);
+        padding: 16px 32px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      }
+
+      header img {
+        height: 50px;
+      }
+
+      header h1 {
+        font-size: 1.7rem;
+        color: white;
+        font-weight: 600;
+        margin: 0;
+        line-height: 1.3;
+      }
+
+      .gold {
+        color: var(--dgid-gold);
+      }
+
+      #root {
+        min-height: 80vh;
+        padding: 2rem;
+      }
+
+      footer {
+        background-color: var(--dgid-green);
+        color: #fff;
+        text-align: center;
+        padding: 16px 10px;
+        font-size: 0.88rem;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <img src="/assets/dgid-logo1.png" alt="Logo de la DGID" />
+      <h1><span class="gold">GEO-AINO SUPREME™</span><br />Plateforme d’audit DGID</h1>
+    </header>
+
+    <div id="root"></div>
+
+    <footer>
+      © 2025 Direction Générale des Impôts et des Domaines — Plateforme GEO-AINO SUPREME™
+    </footer>
+
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
