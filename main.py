@@ -1,17 +1,54 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+import os
+from dotenv import load_dotenv
 
+# Charger les variables d’environnement
+load_dotenv()
+
+# Initialisation de l’app FastAPI
 app = FastAPI()
 
-# Autoriser le frontend à communiquer avec le backend
+# Configuration CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # Change "*" en domaine spécifique en production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+# Importer les routes
+from backend.routes import (
+    upload_sig,
+    upload_dgn,
+    upload_dxf,
+    download,
+    download_all,
+    download_gpkg,
+    converted,
+    cleanup_results,
+    ask_ai,
+)
+
+# Ajouter les routes à l’application
+app.include_router(upload_sig.router)
+app.include_router(upload_dgn.router)
+app.include_router(upload_dxf.router)
+app.include_router(download.router)
+app.include_router(download_all.router)
+app.include_router(download_gpkg.router)
+app.include_router(converted.router)
+app.include_router(cleanup_results.router)
+app.include_router(ask_ai.router)
+
+# Monter le frontend (buildé par Vite)
+app.mount("/assets", StaticFiles(directory="frontend/dist/assets"), name="assets")
+app.mount("/static", StaticFiles(directory="frontend/dist"), name="static")
+
+# Servir index.html à la racine
 @app.get("/")
-def root():
-    return {"status": "API en ligne ✅"}
+async def root():
+    return FileResponse("frontend/dist/index.html")
