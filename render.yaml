@@ -3,7 +3,11 @@ services:
     name: aino-backend
     env: python
     plan: free
-    buildCommand: pip install --no-cache-dir -r requirements.txt
+    buildCommand: |
+      apt-get update && apt-get install -y gdal-bin libgdal-dev && \
+      export CPLUS_INCLUDE_PATH=/usr/include/gdal && \
+      export C_INCLUDE_PATH=/usr/include/gdal && \
+      pip install --no-cache-dir -r requirements.txt
     startCommand: uvicorn main:app --host 0.0.0.0 --port 10000
     autoDeploy: true
     envVars:
