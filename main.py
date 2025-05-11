@@ -12,13 +12,13 @@ app = FastAPI()
 # CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # 🔒 à restreindre en prod
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Import des routes
+# Import des routes backend
 from backend.routes import (
     upload_sig,
     upload_dgn,
@@ -41,20 +41,13 @@ app.include_router(converted.router)
 app.include_router(cleanup_results.router)
 app.include_router(ask_ai.router)
 
-# ✅ Chemins absolus à partir de la racine Render
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-FRONTEND_DIST = os.path.join(BASE_DIR, "public")  # le build Vite est copié ici
-ASSETS_DIR = os.path.join(FRONTEND_DIST, "assets")
+# 👉 Serve le frontend statique depuis /public
+PUBLIC_DIR = os.path.join(os.path.dirname(__file__), "public")
+ASSETS_DIR = os.path.join(PUBLIC_DIR, "assets")
 
-# ❗ Sécurité : vérifie que le frontend est bien buildé
-if not os.path.exists(FRONTEND_DIST):
-    raise RuntimeError(f"Le dossier {FRONTEND_DIST} est manquant. Build manquant ?")
-
-# 💡 Mount des fichiers statiques
 app.mount("/assets", StaticFiles(directory=ASSETS_DIR), name="assets")
-app.mount("/static", StaticFiles(directory=FRONTEND_DIST), name="static")
+app.mount("/static", StaticFiles(directory=PUBLIC_DIR), name="static")
 
-# 📄 Route principale : index.html
 @app.get("/")
 async def root():
-    return FileResponse(os.path.join(FRONTEND_DIST, "index.html"))
+    return FileResponse(os.path.join(PUBLIC_DIR, "index.html"))
