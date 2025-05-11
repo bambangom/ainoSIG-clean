@@ -41,10 +41,16 @@ app.include_router(converted.router)
 app.include_router(cleanup_results.router)
 app.include_router(ask_ai.router)
 
-# 👉 Serve le frontend statique depuis /public
-PUBLIC_DIR = os.path.join(os.path.dirname(__file__), "public")
+# 📁 Nouvelle configuration correcte (le build Vite est dans `public/`)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PUBLIC_DIR = os.path.join(BASE_DIR, "public")
 ASSETS_DIR = os.path.join(PUBLIC_DIR, "assets")
 
+# ✅ Vérification
+if not os.path.exists(PUBLIC_DIR):
+    raise RuntimeError("Le dossier 'public/' est introuvable. Avez-vous bien lancé `npm run build` et copié le contenu dans 'public/' ?")
+
+# ⛓️ Montage des fichiers statiques
 app.mount("/assets", StaticFiles(directory=ASSETS_DIR), name="assets")
 app.mount("/static", StaticFiles(directory=PUBLIC_DIR), name="static")
 
