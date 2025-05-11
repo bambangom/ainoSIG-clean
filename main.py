@@ -4,6 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 import os
 from dotenv import load_dotenv
+from pathlib import Path
 
 # Charger les variables d’environnement
 load_dotenv()
@@ -14,7 +15,7 @@ app = FastAPI()
 # Configuration CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Change "*" en domaine spécifique en production
+    allow_origins=["*"],  # À restreindre en production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -33,7 +34,7 @@ from backend.routes import (
     ask_ai,
 )
 
-# Ajouter les routes à l’application
+# Ajouter les routes
 app.include_router(upload_sig.router)
 app.include_router(upload_dgn.router)
 app.include_router(upload_dxf.router)
@@ -44,11 +45,15 @@ app.include_router(converted.router)
 app.include_router(cleanup_results.router)
 app.include_router(ask_ai.router)
 
-# Monter le frontend (buildé par Vite)
-app.mount("/assets", StaticFiles(directory="frontend/dist/assets"), name="assets")
-app.mount("/static", StaticFiles(directory="frontend/dist"), name="static")
+# Résolution de chemin absolu
+BASE_DIR = Path(__file__).resolve().parent
+DIST_DIR = BASE_DIR / "frontend" / "dist"
+
+# Monter les fichiers statiques
+app.mount("/assets", StaticFiles(directory=DIST_DIR / "assets"), name="assets")
+app.mount("/static", StaticFiles(directory=DIST_DIR), name="static")
 
 # Servir index.html à la racine
 @app.get("/")
 async def root():
-    return FileResponse("frontend/dist/index.html")
+    return FileResponse(DIST_DIR / "index.html")
