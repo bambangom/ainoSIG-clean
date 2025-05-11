@@ -1,27 +1,24 @@
+# main.py (à la racine)
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 import os
 from dotenv import load_dotenv
-from pathlib import Path
 
-# Charger les variables d’environnement
 load_dotenv()
 
-# Initialisation de l’app FastAPI
 app = FastAPI()
 
-# Configuration CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # À restreindre en production
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Importer les routes
+# Routes (depuis backend)
 from backend.routes import (
     upload_sig,
     upload_dgn,
@@ -34,7 +31,6 @@ from backend.routes import (
     ask_ai,
 )
 
-# Ajouter les routes
 app.include_router(upload_sig.router)
 app.include_router(upload_dgn.router)
 app.include_router(upload_dxf.router)
@@ -45,15 +41,11 @@ app.include_router(converted.router)
 app.include_router(cleanup_results.router)
 app.include_router(ask_ai.router)
 
-# Résolution de chemin absolu
-BASE_DIR = Path(__file__).resolve().parent
-DIST_DIR = BASE_DIR / "frontend" / "dist"
+# 🛠️ ATTENTION : chemins RELATIFS depuis la racine Render = /opt/render/project/src/
+# Donc utiliser le bon chemin ici :
+app.mount("/assets", StaticFiles(directory="frontend/dist/assets"), name="assets")
+app.mount("/static", StaticFiles(directory="frontend/dist"), name="static")
 
-# Monter les fichiers statiques
-app.mount("/assets", StaticFiles(directory=DIST_DIR / "assets"), name="assets")
-app.mount("/static", StaticFiles(directory=DIST_DIR), name="static")
-
-# Servir index.html à la racine
 @app.get("/")
 async def root():
-    return FileResponse(DIST_DIR / "index.html")
+    return FileResponse("frontend/dist/index.html")
