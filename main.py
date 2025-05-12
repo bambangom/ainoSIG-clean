@@ -6,7 +6,6 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-
 app = FastAPI()
 
 # CORS
@@ -18,7 +17,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Import des routes backend
+# Routes backend
 from backend.routes import (
     upload_sig,
     upload_dgn,
@@ -41,17 +40,11 @@ app.include_router(converted.router)
 app.include_router(cleanup_results.router)
 app.include_router(ask_ai.router)
 
-# 📁 Nouvelle configuration correcte (le build Vite est dans `public/`)
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-PUBLIC_DIR = os.path.join(BASE_DIR, "public")
-ASSETS_DIR = os.path.join(PUBLIC_DIR, "assets")
+# 🔧 Dossier public compilé
+PUBLIC_DIR = os.path.join(os.path.dirname(__file__), "public")
 
-# ✅ Vérification
-if not os.path.exists(PUBLIC_DIR):
-    raise RuntimeError("Le dossier 'public/' est introuvable. Avez-vous bien lancé `npm run build` et copié le contenu dans 'public/' ?")
-
-# ⛓️ Montage des fichiers statiques
-app.mount("/assets", StaticFiles(directory=ASSETS_DIR), name="assets")
+# 📦 Servir le frontend
+app.mount("/assets", StaticFiles(directory=os.path.join(PUBLIC_DIR, "assets")), name="assets")
 app.mount("/static", StaticFiles(directory=PUBLIC_DIR), name="static")
 
 @app.get("/")
